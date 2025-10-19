@@ -212,22 +212,45 @@ const QRCodeInput = ({ onScanSuccess, onScanError }) => {
   };
 
   // Scan the selected file using html5-qrcode
-  const scanFileForQR = (file) => {
-     // Use a temporary instance for file scanning
-     const fileScanner = new Html5Qrcode(/* elementId, verbose */);
-     fileScanner.scanFile(file, /* showImage= */ false)
-       .then(decodedText => {
-         handleDecodedText(decodedText); // Reuse the same success handler
-       })
-       .catch(err => {
-         setError(`Could not decode QR code from image: ${err}`);
-         if (onScanError) onScanError(err);
-         // Keep the preview, but clear the loading state and maybe show a scan-specific error
-         setLoading(false);
-         // Optionally clear the image preview if scan fails definitively?
-         // clearUploadState();
-       });
-   };
+  const scanFileForQR = async (file) => {
+    setLoading(true);
+    try {
+      if (!file) throw new Error('No file provided');
+
+      // If we already have an Html5Qrcode instance (camera mode), reuse it
+      if (html5QrCodeRef.current && typeof html5QrCodeRef.current.scanFile === 'function') {
+        const decodedText = await html5QrCodeRef.current.scanFile(file, /* showImage= */ false);
+        handleDecodedText(decodedText);
+        return;
+      }
+
+      // Create a temporary hidden element with a deterministic id so Html5Qrcode won't get `undefined`
+      const tempId = `html5-qrcode-temp-${Date.now()}`;
+      const tempDiv = document.createElement('div');
+      tempDiv.id = tempId;
+      tempDiv.style.position = 'fixed';
+      tempDiv.style.left = '-10000px';
+      tempDiv.style.top = '-10000px';
+      document.body.appendChild(tempDiv);
+
+      const fileScanner = new Html5Qrcode(tempId);
+      try {
+        const decodedText = await fileScanner.scanFile(file, /* showImage= */ false);
+        handleDecodedText(decodedText);
+      } finally {
+        // cleanup the scanner and DOM node
+        try { await fileScanner.clear(); } catch (e) { /* ignore cleanup errors */ }
+        if (tempDiv && tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
+      }
+    } catch (err) {
+      const errMsg = err?.message || String(err);
+      setError(errMsg);
+      if (onScanError) onScanError(err);
+      console.error('scanFileForQR error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle file input change event
   const handleInputChange = (e) => {
