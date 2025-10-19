@@ -19,14 +19,20 @@ export const UserProvider = ({ children }) => {
     }
   }, [account, contract]);
 
+  useEffect(() => {
+    console.log('UserContext:', { account, userRole, loading });
+  }, [account, userRole, loading]);
+
   const checkUserRole = async () => {
     if (!contract || !account) return;
 
     try {
       setLoading(true);
+      console.log('checkUserRole start', { account, contractAddress: contract.address || contract.target || 'unknown' });
 
       // Check if owner
       const owner = await contract.owner();
+      console.log('contract.owner():', owner);
       if (owner.toLowerCase() === account.toLowerCase()) {
         setUserRole('OWNER');
         setLoading(false);
@@ -35,6 +41,7 @@ export const UserProvider = ({ children }) => {
 
       // Check if manufacturer
       const isManufacturer = await contract.authorizedManufacturers(account);
+      console.log('authorizedManufacturers:', isManufacturer);
       if (isManufacturer) {
         setUserRole('MANUFACTURER');
         setLoading(false);
@@ -43,6 +50,7 @@ export const UserProvider = ({ children }) => {
 
       // Check if retailer
       const isRetailer = await contract.authorizedRetailers(account);
+      console.log('authorizedRetailers:', isRetailer);
       if (isRetailer) {
         setUserRole('RETAILER');
         setLoading(false);

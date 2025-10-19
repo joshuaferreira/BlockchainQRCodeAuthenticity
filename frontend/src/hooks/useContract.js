@@ -17,7 +17,6 @@ export const useContract = () => {
   const initContract = async () => {
     if (typeof window.ethereum !== 'undefined') {
       try {
-        // Use this for ethers v6
         const provider = new ethers.BrowserProvider(window.ethereum);        
         const signer = await provider.getSigner();
         const contractInstance = new ethers.Contract(
@@ -93,13 +92,36 @@ export const useContract = () => {
     }
   };
 
+  const createProduct = async (productId, batchNumber, category, productDetails) => {
+    if (!contract) throw new Error('Contract not initialized');
+    try {
+      setLoading(true);
+      setError(null);
+      const tx = await contract.createProduct(
+        productId,
+        batchNumber,
+        category,
+        productDetails
+      );
+      // wait for confirmation
+      const receipt = await tx.wait();
+      return receipt;
+    } catch (err) {
+      setError(err?.message || 'Create product failed');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   return {
     account,
     contract,
     loading,
     error,
     connectWallet,
-    verifyAndLogProduct
+    verifyAndLogProduct,
+    createProduct
   };
 };
 
