@@ -1,61 +1,65 @@
-import React, { useState } from 'react';
-import './App.css';
-import { WalletProvider } from './context/WalletContext';
+import './App.css'
+import { UserInfo } from './components/UserInfo'
+import { WalletProvider } from "./context/WalletContext";
 import { ContractProvider } from './context/ContractContext';
-import { UserProvider } from './context/UserContext';
-import Header from './components/shared/Header';
-import ConsumerVerification from './components/consumer/ConsumerVerification';
-import ProductRegistration from './components/manufacturer/ProductRegistration';
-import ProductList from './components/manufacturer/ProductList';
-import ManufacturerDashboard from './components/manufacturer/ManufacturerDashboard';
-import SaleRecording from './components/retailer/SaleRecording';
-import RetailerDashboard from './components/retailer/RetailerDashboard';
-import AdminDashboard from './components/admin/AdminDashboard';
-
-function AppContent() {
-  const [currentView, setCurrentView] = useState('consumer');
-
-  const renderView = () => {
-    switch (currentView) {
-      case 'consumer':
-        return <ConsumerVerification />;
-      case 'manufacturer-register':
-        return <ProductRegistration />;
-      case 'manufacturer-dashboard':
-        return <ManufacturerDashboard />;
-      case 'manufacturer-products':
-        return <ProductList />;
-      case 'retailer':
-        return <SaleRecording />;
-      case 'retailer-dashboard':
-        return <RetailerDashboard />;
-      case 'admin':
-        return <AdminDashboard />;
-      default:
-        return <ConsumerVerification />;
-    }
-  };
-
-  return (
-    <div className="App">
-      <Header currentView={currentView} setCurrentView={setCurrentView} />
-      <main className="main-content">
-        {renderView()}
-      </main>
-    </div>
-  );
-}
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import MakeManufacturer from './components/admin/makeManufacturer';
+import MakeRetailer from './components/admin/makeRetailer';
+import AddProduct from './components/manufacturer/AddProduct';
+import GetProduct from './components/consumer/GetProduct';
+import VerifyProduct from './components/consumer/VerifyProduct';
+import SellProduct from './components/retailers/SellProduct';
+import ViewProducts from './components/manufacturer/ViewProducts';
 
 function App() {
   return (
     <WalletProvider>
       <ContractProvider>
-        <UserProvider>
-          <AppContent />
-        </UserProvider>
+        <BrowserRouter>
+          <h1>
+            Blockchain QR Product Verifier
+          </h1>
+          <div style={{ padding: 12, border: '1px solid #ccc'}}>
+            <Routes>
+              <Route path="/" element={<UserInfo />} />
+              <Route path="/add-manufacturer" element={<MakeManufacturer />} />
+              <Route path="/add-retailer" element={<MakeRetailer />} />
+              <Route path="/add-product" element={<AddProduct />} />
+              <Route path="/get-product" element={<GetProduct />} />
+              <Route path="/verify-product" element={<VerifyProduct />} />
+              <Route path="/sell-product" element={<SellProduct />} />
+              <Route path="/view-products" element={<ViewProducts />} />
+            </Routes>
+          </div>
+
+          <div style={{margin: 10}}>
+            <Link to="/">Home</Link> 
+          </div>
+
+          <div style={{display: 'flex', gap: 5, flexDirection: 'column'}}>
+            <strong>Actions - Admin</strong>
+            <Link to="/add-manufacturer">Add Manufacturer</Link>
+            <Link to="/add-retailer">Add Retailer</Link>
+
+            <strong>Actions - Manufacturer</strong>
+            <Link to="/add-product">Add Product</Link>
+            <Link to="/get-product">Get Product</Link>
+            <Link to="/view-products">View Products</Link>
+
+            <strong>Actions - Retailer</strong>
+            <Link to="/sell-product">Sell Product</Link>
+
+            <strong>Actions - Consumer</strong>
+            <Link to="/verify-product">Verify Product</Link>
+          </div>
+
+          <div>
+            
+          </div>
+        </BrowserRouter>
       </ContractProvider>
     </WalletProvider>
-  );
+  )
 }
 
-export default App;
+export default App

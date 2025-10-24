@@ -11,11 +11,6 @@ const scanLogSchema = new mongoose.Schema({
     enum: ['NOT_FOUND', 'AUTHENTIC', 'ALREADY_SOLD'],
     required: true
   },
-  timestamp: { //Gemini Suggests to remove this field later as it is redundant with createdAt
-    type: Date,
-    default: Date.now,
-    index: true
-  },
   location: {
     type: {
       type: String,
@@ -34,12 +29,11 @@ const scanLogSchema = new mongoose.Schema({
   blockchainData: {
     manufacturer: String,
     batchNumber: String,
-    category: String,
     status: String
   },
   deviceInfo: {
     userAgent: String,
-    platform: String
+    platform: String,
   }
 }, {
   timestamps: true // Automatically adds createdAt and updatedAt fields

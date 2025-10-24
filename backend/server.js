@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const connectDB = require('./config/db');
 const scanRoutes = require('./routes/scans');
+const productRoutes = require('./routes/products');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/scans', scanRoutes);
+app.use('/api/products', productRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
