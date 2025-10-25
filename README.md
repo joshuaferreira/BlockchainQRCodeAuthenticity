@@ -197,6 +197,7 @@ App available at **[http://localhost:5173](http://localhost:5173)**
    * Scan or upload product QR codes.
    * Verify authenticity instantly.
 
+![Sequence Diagram](sequence.png).
 ---
 
 ## 🔮 Future Enhancements
