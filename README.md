@@ -7,7 +7,7 @@ It addresses the global problem of product counterfeiting by allowing consumers 
 
 The system uses a **hybrid architecture** — combining the **trust and immutability of blockchain** (for core product data) with the **efficiency and scalability of an off-chain API and database** for analytics and scan logging.
 
-![System Architecture Diagram](path/to/architecture-diagram.png)
+![System Architecture Diagram](Architecture(Flow).png)
 
 ---
 
