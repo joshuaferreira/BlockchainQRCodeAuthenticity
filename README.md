@@ -73,8 +73,8 @@ The system uses a **hybrid architecture** — combining the **trust and immutabi
 ```bash
 .
 ├── backend/                 # Node.js API and MongoDB Models
-├── blockchain-qr-frontend/  # React Frontend DApp
-└── smart-contract/          # Solidity Smart Contract (Truffle Project)
+├── frontend/  # React Frontend DApp
+└── truffle/          # Solidity Smart Contract (Truffle Project)
 ```
 
 
